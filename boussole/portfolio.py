@@ -6,6 +6,8 @@ import math
 
 import pandas as pd
 
+from .config import maintenant
+
 from .config import CAPITAL_INITIAL
 
 
@@ -152,7 +154,7 @@ class Portefeuille:
         x = dict(t=int(t), date=pd.Timestamp(date).strftime("%Y-%m-%d"), ticker=ticker, sens=sens,
                  quantite=int(quantite), prix=round(float(prix), 2), montant=float(montant), motif=motif)
         if self.horodatage:
-            x["enregistre"] = dt.datetime.now().isoformat(timespec="seconds")
+            x["enregistre"] = maintenant().isoformat(timespec="seconds")
         self.transactions.append(x)
         return x
 

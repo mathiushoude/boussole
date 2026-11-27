@@ -166,4 +166,3 @@ investissement personnalisé. Tout investissement comporte un risque de perte en
 performances passées ne préjugent pas des performances futures.
 
 Captures d'écran (en mode démonstration, faute d'accès à Yahoo depuis l'environnement de développement) : dossier `docs/captures/`.
-# boussole

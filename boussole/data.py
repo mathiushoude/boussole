@@ -19,7 +19,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from .config import JOURS_HISTORIQUE, JOURS_PAR_AN, SEED, UNIVERS
+from .config import JOURS_HISTORIQUE, JOURS_PAR_AN, PARIS, SEED, UNIVERS, aujourdhui, maintenant
 
 CACHE_DIR = Path(__file__).resolve().parent.parent / "data" / "cache"
 YAHOO, DEMO = "Yahoo Finance", "Démonstration"
@@ -59,7 +59,7 @@ def info_titre(ticker: str) -> dict:
 # Mode démonstration (fictif, reproductible)
 # --------------------------------------------------------------------------- #
 def calendrier(fin: dt.date | None = None, n: int = JOURS_PAR_AN + JOURS_HISTORIQUE) -> pd.DatetimeIndex:
-    return pd.bdate_range(end=pd.Timestamp(fin or dt.date.today()).normalize(), periods=n)
+    return pd.bdate_range(end=pd.Timestamp(fin or aujourdhui()).normalize(), periods=n)
 
 
 def simuler_cours(ticker: str, dates: pd.DatetimeIndex) -> pd.Series:
@@ -337,14 +337,14 @@ def lire_recherche(quotes: list[dict]) -> list[dict]:
 def charger_cours(tickers: list[str], source: str = YAHOO, fin: dt.date | None = None) -> Cours:
     tickers = list(tickers)
     if source == DEMO:
-        return Cours(cours_simules(tickers, fin), DEMO, dt.datetime.now(),
+        return Cours(cours_simules(tickers, fin), DEMO, maintenant(),
                      message="Mode démonstration : cours fictifs, à ne pas utiliser pour décider.")
     fichier = _fichier_cache(tickers)
     try:
         prix, devises = telecharger_yahoo(tickers)
         CACHE_DIR.mkdir(parents=True, exist_ok=True)
         prix.to_csv(fichier)
-        maj = dt.datetime.now()
+        maj = maintenant()
         fichier.with_suffix(".json").write_text(json.dumps({"maj": maj.isoformat(), "devises": devises}),
                                                 encoding="utf-8")
         conv = [t for t, d in devises.items() if d not in ("EUR", None, "")]
@@ -360,7 +360,7 @@ def charger_cours(tickers: list[str], source: str = YAHOO, fin: dt.date | None =
                 maj = dt.datetime.fromisoformat(meta["maj"])
                 devises = meta.get("devises") or {}
             except (OSError, ValueError, KeyError):
-                maj = dt.datetime.fromtimestamp(fichier.stat().st_mtime)
+                maj = dt.datetime.fromtimestamp(fichier.stat().st_mtime, PARIS).replace(tzinfo=None)
             raison = str(exc) if isinstance(exc, DonneesIndisponibles) else type(exc).__name__
             return Cours(prix, YAHOO, maj, hors_ligne=True, devises=devises,
                          message=f"Yahoo Finance injoignable ({raison}) : derniers cours réels enregistrés "

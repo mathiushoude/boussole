@@ -54,6 +54,3 @@ borderColor = "#243049"
 linkColor = "#7C93FF"
 redColor = "#FF6B6B"
 greenColor = "#34D399"
-
-[browser]
-gatherUsageStats = false
