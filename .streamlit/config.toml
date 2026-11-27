@@ -1,0 +1,56 @@
+# Thème conforme à la charte graphique Boussole v3 (rôles de couleur clair / sombre).
+[server]
+enableStaticServing = true
+headless = false
+
+[browser]
+gatherUsageStats = false
+
+[client]
+toolbarMode = "minimal"
+
+[theme]
+# Pas de base imposée : le thème suit le système ; app.py applique le mode choisi (clair / sombre).
+font = "'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif"
+headingFont = "'Source Serif 4', Georgia, serif"
+codeFont = "'IBM Plex Mono', Consolas, monospace"
+baseRadius = "10px"
+buttonRadius = "full"
+showWidgetBorder = true
+
+[[theme.fontFaces]]
+family = "IBM Plex Sans"
+url = "app/static/fonts/IBMPlexSans.woff2"
+weight = "100 700"
+
+[[theme.fontFaces]]
+family = "Source Serif 4"
+url = "app/static/fonts/SourceSerif4.woff2"
+weight = "200 900"
+
+[[theme.fontFaces]]
+family = "IBM Plex Mono"
+url = "app/static/fonts/IBMPlexMono-500.woff2"
+weight = "500"
+
+[theme.light]
+# Mode clair de la charte, utilisé quand l'affichage suit le système
+primaryColor = "#3B5BDB"
+backgroundColor = "#F7F8FA"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#0F172A"
+borderColor = "#E2E6EC"
+linkColor = "#3B5BDB"
+redColor = "#CF2A30"
+greenColor = "#0B7D55"
+
+[theme.dark]
+# Mode sombre de la charte, utilisé quand l'affichage suit le système
+primaryColor = "#7C93FF"
+backgroundColor = "#0B1220"
+secondaryBackgroundColor = "#141C2E"
+textColor = "#F1F5F9"
+borderColor = "#243049"
+linkColor = "#7C93FF"
+redColor = "#FF6B6B"
+greenColor = "#34D399"
