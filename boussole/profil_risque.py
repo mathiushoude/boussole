@@ -9,8 +9,6 @@ from __future__ import annotations
 
 import datetime as dt
 
-from .config import aujourdhui
-
 from .config import Regles
 
 PROFILS = ["Prudent", "Équilibré", "Dynamique"]
@@ -109,7 +107,7 @@ def adequation(volatilite: float | None, profil: str) -> tuple[str, str]:
 
 
 def entree_historique(score: int, profil: str, motif: str) -> dict:
-    return dict(date=aujourdhui().isoformat(), score=int(score), profil=profil, motif=motif)
+    return dict(date=dt.date.today().isoformat(), score=int(score), profil=profil, motif=motif)
 
 
 def a_revoir(historique: list[dict], mois: int = 12) -> bool:
@@ -120,4 +118,4 @@ def a_revoir(historique: list[dict], mois: int = 12) -> bool:
         der = dt.date.fromisoformat(historique[-1]["date"])
     except (KeyError, ValueError):
         return True
-    return (aujourdhui() - der).days > mois * 30
+    return (dt.date.today() - der).days > mois * 30

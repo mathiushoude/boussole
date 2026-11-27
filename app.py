@@ -19,7 +19,7 @@ from plotly.subplots import make_subplots
 from boussole import comptes, profil_risque as pr
 from boussole.catalogue import CATALOGUE
 from boussole import data, engine, news as nw, rules, score as sc, theme, ui
-from boussole.config import (PARIS, aujourdhui, maintenant, ACTIONS_PAR_DEFAUT, CAPITAL_INITIAL, JOURS_PAR_AN, MAX_ACTIONS, UNIVERS, Profil,
+from boussole.config import (ACTIONS_PAR_DEFAUT, CAPITAL_INITIAL, JOURS_PAR_AN, MAX_ACTIONS, UNIVERS, Profil,
                              Regles, place)
 from boussole.portfolio import OperationRefusee, Portefeuille, allouer
 
@@ -339,7 +339,7 @@ def fond_brut(ticker: str, source: str) -> dict:
 @st.cache_data(show_spinner=False, ttl=600)
 def actus_reelles(ticker: str, nom: str) -> tuple[list[dict], list[str], str]:
     items, erreurs = nw.actualites(ticker, nom)
-    return items, erreurs, maintenant().strftime("%H:%M")
+    return items, erreurs, dt.datetime.now().strftime("%H:%M")
 
 
 @st.cache_data(show_spinner=False, ttl=20)
@@ -571,7 +571,7 @@ if not ss.configure:
 
 try:
     with st.spinner("Récupération des cours sur Yahoo Finance…"):
-        DONNEES: data.Cours = cours_cache(tuple(ss.tickers), ss.profil.source_donnees, aujourdhui())
+        DONNEES: data.Cours = cours_cache(tuple(ss.tickers), ss.profil.source_donnees, dt.date.today())
 except data.DonneesIndisponibles as exc:
     ecran_erreur(str(exc))
 COURS, SOURCE, MSG_SOURCE = DONNEES.prix, DONNEES.source, DONNEES.message
@@ -595,7 +595,7 @@ if ss.get(CLE_PF) is None:         # portefeuille réel : constitué au dernier 
     ss[CLE_PF] = allouer(ss.capital, {t_: v for t_, v in ss.allocation.items() if t_ in COURS}, COURS, N - 1,
                          DATES[N - 1], motif="Investissement initial")
     for x in ss[CLE_PF].transactions:
-        x["enregistre"] = maintenant().isoformat(timespec="seconds")
+        x["enregistre"] = dt.datetime.now().isoformat(timespec="seconds")
     sauver()
 ss[CLE_PF].recaler(DATES)
 ss[CLE_PF].horodatage = True
@@ -1416,7 +1416,7 @@ with onglets[2]:
         titre = (f'<a href="{ui.e(n["lien"])}" target="_blank" rel="noopener">{ui.e(n["titre"])}</a>' if n.get("lien")
                  else f'<span class="t">{ui.e(n["titre"])}</span>')
         quand = nw.il_y_a(n["date"]) if not DEMO else pd.Timestamp(n["date"]).strftime("%d/%m/%Y")
-        heure = n["date"].astimezone(PARIS).strftime("%d/%m %H:%M") if not DEMO else ""
+        heure = n["date"].astimezone().strftime("%d/%m %H:%M") if not DEMO else ""
         items.append(f'<div class="news" style="animation-delay:{i * .04:.2f}s;padding:10px 8px">{signe} {titre}'
                      f'<div class="meta legende"><span class="src">{ui.e(n["source"])}</span><span>·</span>'
                      f'<span title="{heure}">{ui.e(quand)}</span></div></div>')

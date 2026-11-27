@@ -311,9 +311,7 @@ html,body,.stApp{{font-family:var(--sans);color:var(--text)}}
 [data-testid="stSidebar"]{{background:var(--verre-fort) !important;backdrop-filter:var(--flou);border-right:1px solid var(--border)}}
 .stTabs [role="tablist"]{{gap:4px;padding:5px;border-radius:999px;background:var(--verre-fort);
   border:1px solid var(--border);backdrop-filter:var(--flou);-webkit-backdrop-filter:var(--flou);
-  box-shadow:{ombre}, var(--arete);position:sticky;top:.5rem;z-index:1000;overflow-x:auto;scroll-behavior:smooth}}
-.stTabs [role="tablist"]::before{{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;
-  background:{rgba(t["bg"], .72)}}}   /* bande opaque : le contenu ne transparaît plus sous les onglets collés */
+  box-shadow:inset 0 1px 0 var(--reflet);position:sticky;top:.5rem;z-index:50;overflow-x:auto}}
 .stTabs [role="tab"]{{min-height:44px;padding:0 16px;border-radius:999px;color:var(--muted);
   white-space:nowrap;background:transparent;transition:background-color .3s var(--ease), color .3s}}
 .stTabs [role="tab"] p{{font-weight:600;font-size:13px}}
@@ -517,18 +515,8 @@ FX_JS = r"""
     setTimeout(() => capLogo(...ongletActif()), 30);
   }, {passive:true});
   D.addEventListener('click', ev => {
-    const tab = ev.target.closest && ev.target.closest('[role="tab"]'); if (!tab) return;
-    setTimeout(() => capLogo(...ongletActif()), 60);
-    /* Changement d'onglet depuis le bas de la page : on remonte au début du nouvel onglet. */
-    const zone = D.querySelector('[data-testid="stMain"]'), bloc = tab.closest('.stTabs');
-    if (zone && bloc) {
-      const haut = bloc.getBoundingClientRect().top - zone.getBoundingClientRect().top + zone.scrollTop - 12;
-      if (zone.scrollTop > haut + 4) zone.scrollTo({top: Math.max(0, haut), behavior: reduit ? 'auto' : 'smooth'});
-    }
-    const liste = tab.parentElement;              /* centre l'onglet dans la barre (téléphone) sans toucher au défilement vertical */
-    if (liste && liste.scrollWidth > liste.clientWidth)
-      liste.scrollLeft = tab.offsetLeft - (liste.clientWidth - tab.offsetWidth) / 2;
-  }, true);
+    if (ev.target.closest && ev.target.closest('[role="tab"]')) setTimeout(() => capLogo(...ongletActif()), 60);
+  });
 
   /* ---- Page de connexion : la boussole vivante ---- */
   function rose(){

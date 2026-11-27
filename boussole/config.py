@@ -4,25 +4,6 @@ from __future__ import annotations
 from dataclasses import dataclass, asdict, field
 
 SEED = 42  # graine aléatoire fixe (EXG-R-01)
-
-
-# Heure de référence de l'application : la France (UTC+1 en hiver, UTC+2 en été), quel que soit l'ordinateur.
-try:
-    from zoneinfo import ZoneInfo as _ZoneInfo
-    PARIS = _ZoneInfo("Europe/Paris")
-except Exception:                      # Windows sans le paquet tzdata : repli sur dateutil (fourni avec pandas)
-    from dateutil import tz as _tz
-    PARIS = _tz.gettz("Europe/Paris")
-
-
-def maintenant():
-    """Date et heure actuelles à Paris (sans fuseau attaché, pour l'affichage et l'enregistrement)."""
-    import datetime as _dt
-    return _dt.datetime.now(PARIS).replace(tzinfo=None)
-
-
-def aujourdhui():
-    return maintenant().date()
 CAPITAL_INITIAL = 500_000.0
 JOURS_PAR_AN = 252
 JOURS_HISTORIQUE = 520  # historique avant le début de l'année (MM50, RSI et graphiques sur 2 ans)
@@ -32,12 +13,6 @@ MAX_ACTIONS = 10       # nombre maximal de valeurs suivies
 # "prix0", "vol", "drift" et les fondamentaux ne servent qu'au mode démonstration
 # (valeurs indicatives, arrondies, à ne pas utiliser comme données de référence).
 UNIVERS: dict[str, dict] = {
-    "RMS.PA": dict(nom="Hermès", secteur="Luxe", prix0=2100, vol=0.25, drift=0.08,
-                   ca=15.2e9, dpa=16.0, per=48.0, marge=0.31),
-    "DSY.PA": dict(nom="Dassault Systèmes", secteur="Technologie", prix0=33, vol=0.28, drift=0.05,
-                   ca=6.2e9, dpa=0.26, per=30.0, marge=0.19),
-    "CAP.PA": dict(nom="Capgemini", secteur="Technologie", prix0=170, vol=0.27, drift=0.04,
-                   ca=22.1e9, dpa=3.4, per=16.0, marge=0.07),
     "MC.PA": dict(nom="LVMH", secteur="Luxe", prix0=690, vol=0.27, drift=0.06,
                   ca=84.7e9, dpa=13.0, per=24.0, marge=0.15),
     "TTE.PA": dict(nom="TotalEnergies", secteur="Énergie", prix0=58, vol=0.22, drift=0.05,
@@ -154,7 +129,7 @@ def horaires(ticker: str) -> tuple[str, str, str]:
     return HORAIRES.get(suffixe, HORAIRES[".PA"] if suffixe else HORAIRES[""])
 
 
-ACTIONS_PAR_DEFAUT = ["RMS.PA", "DSY.PA", "CAP.PA", "TTE.PA", "AI.PA"]   # Hermès, Dassault Systèmes, Capgemini, TotalEnergies, Air Liquide
+ACTIONS_PAR_DEFAUT = ["MC.PA", "TTE.PA", "SAN.PA", "AIR.PA", "OR.PA"]
 
 
 @dataclass
